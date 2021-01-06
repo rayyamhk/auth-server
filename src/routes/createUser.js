@@ -35,7 +35,7 @@ async function createUser(req, res) {
       loginAttempts: 0,
       isBlocked: false,
     });
-    logger.info(`Insert successfully!`);
+    logger.info(`${email}: Created successfully!`);
     return res.status(200).send(`User with email ${email} was added successfully!`).end();
   } catch (err) {
     logger.error(err);

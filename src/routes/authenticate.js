@@ -43,7 +43,7 @@ async function authenticate(req, res) {
         }
       }, { upsert: false });
 
-      logger.info('Log in successfully');
+      logger.info(`${user.email}: Log in successfully`);
       return res.status(200).json({
         user: payload,
         accessToken,

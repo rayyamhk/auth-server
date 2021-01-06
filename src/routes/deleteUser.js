@@ -14,7 +14,7 @@ async function deleteUser(req, res) {
 
     const result = await collection.deleteOne({ email });
     if (result.deletedCount === 1) {
-      logger.info('Deleted successfully!');
+      logger.info(`${email}: Deleted successfully!`);
       return res.status(200).send(`User with email ${email} was deleted successfully!`);
     }
     logger.warn('User does not exist');

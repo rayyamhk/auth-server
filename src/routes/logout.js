@@ -13,7 +13,7 @@ async function logout(req, res) {
     }, { upsert: false });
 
     if (result.modifiedCount === 1) {
-      logger.info('Logged out successfully');
+      logger.info(`${email}: Logged out successfully`);
       return res.status(200).send('Logged out successfully');
     }
 
