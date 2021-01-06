@@ -45,6 +45,7 @@ async function authenticate(req, res) {
 
       logger.info('Log in successfully');
       return res.status(200).json({
+        user: payload,
         accessToken,
         refreshToken,
       }).end();

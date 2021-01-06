@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors')
 const app = express();
 const dotenv = require('dotenv');
 const { logger } = require('./src/utils');
@@ -19,10 +20,11 @@ dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.get('/users', secureAccess, getUsers);
 app.get('/user', secureAccess, getUser);
-app.post('/user', secureAccess, createUser);
+app.post('/user', createUser);
 app.delete('/user', secureAccess, deleteUser);
 app.put('/user', secureAccess, updateUser);
 app.post('/authenticate', authenticate);
