@@ -26,7 +26,7 @@ async function getDatabase() {
     logger.info('MongoDB connection success!');
     return db;
   } catch (err) {
-    logger.error(err);
+    throw err;
   }
 };
 

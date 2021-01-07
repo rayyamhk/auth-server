@@ -12,8 +12,9 @@ const {
   authenticate,
   authorize,
   logout,
+  recovery,
 } = require('./src/routes');
-const { secureAccess } = require('./src/middlewares');
+const { secureAccess, ipService } = require('./src/middlewares');
 
 const PORT = process.env.PORT || 8080;
 dotenv.config();
@@ -21,6 +22,7 @@ dotenv.config();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(ipService());
 
 app.get('/users', secureAccess, getUsers);
 app.get('/user', secureAccess, getUser);
@@ -30,6 +32,7 @@ app.put('/user', secureAccess, updateUser);
 app.post('/authenticate', authenticate);
 app.post('/authorize', authorize);
 app.post('/logout', logout);
+app.post('/recovery', recovery);
 
 app.listen(PORT, () => {
   logger.log(`Server is listening to port ${PORT}...`);

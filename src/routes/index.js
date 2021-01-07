@@ -6,6 +6,7 @@ const updateUser = require('./updateUser');
 const authenticate = require('./authenticate');
 const authorize = require('./authorize');
 const logout = require('./logout');
+const recovery = require('./recovery');
 
 module.exports = {
   getUsers,
@@ -16,4 +17,5 @@ module.exports = {
   authenticate,
   authorize,
   logout,
+  recovery,
 };
