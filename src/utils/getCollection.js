@@ -3,11 +3,10 @@ const logger = require('./logger');
 
 let db = null;
 
-async function getDatabase() {
-  if (db) {
-    return db;
-  }
+const collections = {},
+      collectionNames = ['Users'];
 
+async function initDatabase() {
   try {
     const {
       MONGO_USERNAME,
@@ -30,4 +29,25 @@ async function getDatabase() {
   }
 };
 
-module.exports = getDatabase;
+async function getCollection(key) {
+  if (!collectionNames.includes(key)) {
+    throw new Error('Collection does not exist');
+  }
+
+  if (collections[key]) {
+    return collections[key];
+  }
+
+  try {
+    if (!db) {
+      await initDatabase();
+    }
+    const collection = db.collection(key);
+    collections[key] = collection;
+    return collection;
+  } catch (err) {
+    throw err;
+  }
+}
+
+module.exports = getCollection;

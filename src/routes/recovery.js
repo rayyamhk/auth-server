@@ -1,10 +1,10 @@
 const {
-  getDatabase,
   genVerification,
   sendMail,
   Cache,
   logger,
 } = require('../utils');
+const { updateUser } = require('../utils/Users');
 
 const codeCache = new Cache({
   ttl: 3 * 60 * 1000, // 3m
@@ -22,6 +22,7 @@ async function recovery(req, res) {
   if (task === 'verify') {
     const { code, email } = req.body;
     const item = codeCache.get(email);
+
     // if submit nothing or the email hasn't been requested for recovery
     if (!code || !item) {
       return res.status(400).send('Bad request').end();
@@ -45,6 +46,7 @@ async function recovery(req, res) {
     // check if the client is allowed to change password or not
     const key = `${email}|${req.ip}`;
     const isAllowed = allowedCache.get(key);
+
     if (!email || !password || !isAllowed) {
       return res.status(400).send('Bad request').end();
     }
@@ -53,32 +55,33 @@ async function recovery(req, res) {
     allowedCache.remove(key);
 
     try {
-      const database = await getDatabase();
-      const Users = await database.collection('Users');
+      const {
+        status,
+        statusCode,
+        message,
+      } = await updateUser(email, { password });
 
-      const options = {
-        $set: {
-          password,
-          updatedAt: new Date().toISOString(),
-        },
-      };
-      const result = await Users.updateOne({ email }, options, { upsert: false });
-
-      if (result.modifiedCount === 1) {
-        return res.status(200).send('Your password has been changed successfully').end();
+      if (status) {
+        logger.info(message);
+        return res.status(statusCode).send('Your password has been changed successfully').end();
       }
 
-      return res.status(400).send('Email does not exist').end();
-    } catch (error) {
+      logger.warn(message);
+      return res.status(statusCode).send(message).end();
+
+    } catch (err) {
+      logger.error(err);
       return res.status(500).send('500 Internal Server Error').end();
     }
   }
 
   // generate verification code
   const { email } = req.body;
+
   if (!email) {
     return res.status(400).send('Bad request').end();
   }
+
   const verificationCode = genVerification();
   codeCache.set(email, verificationCode);
   
@@ -88,6 +91,7 @@ async function recovery(req, res) {
       subject: 'Reset your password',
       text: `Your verification code: ${verificationCode}`,
     });
+    logger.info(`Email has been sent to ${email}`);
     return res.status(200).send(`Verification code has been sent to your email address, please verify it within 3 minutes.`).end();
   } catch (err) {
     logger.error(err);

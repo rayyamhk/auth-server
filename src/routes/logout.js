@@ -1,28 +1,26 @@
-const { getDatabase, logger } = require('../utils');
+const { logger } = require('../utils');
+const { updateUser } = require('../utils/Users');
 
 async function logout(req, res) {
   try {
-    const database = await getDatabase();
-    const Users = await database.collection('Users');
-
     const { email } = req.body;
-    const result = await Users.updateOne({ email }, {
-      $set: {
-        refreshToken: null,
-      },
-    }, { upsert: false });
 
-    if (result.modifiedCount === 1) {
+    const {
+      status,
+      statusCode,
+      message,
+    } = await updateUser(email, { refreshToken: null });
+  
+    if (status) {
       logger.info(`${email}: Logged out successfully`);
-      return res.status(200).send('Logged out successfully');
+      return res.status(statusCode).send('Logged out successfully').end();
     }
 
-    logger.warn('Email does not exist');
-    return res.status(400).send('User does not exist');
-
-  } catch (error) {
-    logger.error(error);
-    return res.status(500).send('Server error');
+    logger.warn(message);
+    return res.status(statusCode).send(message).end();
+  } catch (err) {
+    logger.error(err);
+    return res.status(500).send('500 Internal Server Error');
   }
 };
 

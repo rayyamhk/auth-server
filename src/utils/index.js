@@ -1,4 +1,4 @@
-const getDatabase = require('./getDatabase');
+const getCollection = require('./getCollection');
 const logger = require('./logger');
 const searchQueryConstructor = require('./searchQueryConstructor');
 const Cache = require('./Cache');
@@ -7,9 +7,9 @@ const sendMail = require('./sendMail');
 
 module.exports = {
   searchQueryConstructor,
-  getDatabase,
-  logger,
-  Cache,
+  getCollection,
   genVerification,
   sendMail,
+  logger,
+  Cache,
 };

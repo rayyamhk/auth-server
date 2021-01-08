@@ -1,4 +1,3 @@
-const logger = require('./logger');
 const nodemailer = require('nodemailer');
 
 let transporter;
@@ -7,9 +6,9 @@ let transporter;
 // all email will be catched by ethereal.email
 const HOST = 'smtp.ethereal.email',
       PORT = 587,
-      USER = 'wyatt.zboncak2@ethereal.email',
-      PASSWORD = 'Tga89vPtxZEMB3m5Fw',
-      SENDER_NAME = 'Wyatt Zboncak';
+      USER = 'nora.lang@ethereal.email',
+      PASSWORD = 'mG1RcGkFBpXVKgsQUd',
+      SENDER_NAME = 'Nora Lang';
 
 function init() {
   transporter = nodemailer.createTransport({
@@ -28,12 +27,10 @@ async function sendMail(options = {}) {
   }
   const {
     from = `${SENDER_NAME} <${USER}>`,
-    to,
     ...rest
   } = options;
   try {
-    await transporter.sendMail({ from, to, ...rest });
-    logger.info(`Email has been sent to ${to}`);
+    await transporter.sendMail({ from, ...rest });
   } catch (err) {
     throw err;
   }
