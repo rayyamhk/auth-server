@@ -8,7 +8,7 @@ async function getUsers(req, res) {
       statusCode,
       message,
       payload,
-    } = await getAllUsers(options);
+    } = await getAllUsers({}, options);
     logger.info(message);
     return res.status(statusCode).json(payload).end();
   } catch (err) {
