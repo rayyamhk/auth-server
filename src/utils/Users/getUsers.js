@@ -1,11 +1,9 @@
 const getCollection = require('../getCollection');
-const searchQueryConstructor = require('../searchQueryConstructor');
 
-async function getUsers(query) {
+async function getUsers(query, options) {
   try {
     const Users = await getCollection('Users');
-    const options = searchQueryConstructor(query);
-    const users = await Users.find({}, options).toArray();
+    const users = await Users.find(query, options).toArray();
     return {
       status: true,
       statusCode: 200,

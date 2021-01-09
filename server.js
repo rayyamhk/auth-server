@@ -13,6 +13,8 @@ const {
   authorize,
   logout,
   recovery,
+  createComment,
+  getComments,
 } = require('./src/routes');
 const { secureAccess, ipService } = require('./src/middlewares');
 
@@ -33,6 +35,9 @@ app.post('/authenticate', authenticate);
 app.post('/authorize', authorize);
 app.post('/logout', logout);
 app.post('/recovery', recovery);
+
+app.get('/comments', getComments);
+app.post('/comment', createComment);
 
 app.listen(PORT, () => {
   logger.log(`Server is listening to port ${PORT}...`);

@@ -1,5 +1,5 @@
-function searchQueryConstructor(query) {
-  const { order_by, order, limit, skip } = query;
+function optionsConstructor(obj) {
+  const { order_by, order, limit, skip } = obj;
   const options = {};
   if (order_by && order) {
     const sort = {};
@@ -15,4 +15,4 @@ function searchQueryConstructor(query) {
   return options;
 };
 
-module.exports = searchQueryConstructor;
+module.exports = optionsConstructor;

@@ -4,7 +4,7 @@ const logger = require('./logger');
 let db = null;
 
 const collections = {},
-      collectionNames = ['Users'];
+      collectionNames = ['Users', 'Comments'];
 
 async function initDatabase() {
   try {
