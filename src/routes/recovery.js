@@ -13,7 +13,7 @@ async function recovery(req, res) {
 
     try {
       const { email, ip } = await jwt.verify(token, process.env.JWT_VERIFY_TOKEN_KEY);
-      logger.info(`Request ip address: ${ip}`);
+      logger.info(`Request ip address: ${req.ip}`);
       if (ip !== req.ip) {
         logger.error('Ip address does not match');
         return res.status(403).send('Unauthorized').end();
@@ -57,7 +57,7 @@ async function recovery(req, res) {
           text: `Please verify your password recovery request via this url: ${process.env.PRODUCT_URL}/recovery/reset?token=${verifyToken}`,
         });
         logger.info(`Email has been sent to ${email}`);
-        logger.info(`Request ip address: ${ip}`);
+        logger.info(`Request ip address: ${req.ip}`);
         return res.status(200).send(`An email has been sent to your address, please verify it within 5 minutes.`).end();
       }
       logger.warn(message);
