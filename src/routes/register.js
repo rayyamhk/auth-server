@@ -7,7 +7,7 @@ const {
 const { createUser, updateUser, getUser } = require('../utils/Users');
 
 const cache = new Cache({
-  ttl: 15 * 1000, // 5m
+  ttl: 5 * 60 * 1000, // 5m
   period: 60 * 60 * 1000, // 1h
 });
 

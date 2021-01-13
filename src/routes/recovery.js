@@ -14,7 +14,7 @@ async function recovery(req, res) {
     try {
       const { email, ip } = await jwt.verify(token, process.env.JWT_VERIFY_TOKEN_KEY);
       logger.info(`Request ip address: ${ip}`);
-      if (ip !== req.ip) {
+      if (ip !== req.requestIp) {
         logger.error('Ip address does not match');
         return res.status(403).send('Unauthorized').end();
       }
@@ -49,7 +49,7 @@ async function recovery(req, res) {
     try {
       const { status, message } = await getUser(email);
       if (status) {
-        const payload = { email, ip: req.ip };
+        const payload = { email, ip: req.requestIp };
         const verifyToken = await jwt.sign(payload, process.env.JWT_VERIFY_TOKEN_KEY, { expiresIn: '5m' });
         await sendMail({
           to: `User <${email}>`,
