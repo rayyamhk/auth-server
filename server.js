@@ -16,6 +16,7 @@ const {
   recovery,
   createComment,
   getComments,
+  deleteComment,
 } = require('./src/routes');
 const { secureAccess, ipService } = require('./src/middlewares');
 
@@ -40,6 +41,7 @@ app.post('/recovery', recovery);
 
 app.get('/comments', getComments);
 app.post('/comment', createComment);
+app.delete('/comment', deleteComment);
 
 app.listen(PORT, () => {
   logger.log(`Server is listening to port ${PORT}...`);

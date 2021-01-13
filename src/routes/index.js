@@ -10,7 +10,7 @@ const recovery = require('./recovery');
 const register = require('./register');
 const createComment = require('./createComment');
 const getComments = require('./getComments');
-
+const deleteComment = require('./deleteComment');
 
 module.exports = {
   getUsers,
@@ -25,4 +25,5 @@ module.exports = {
   register,
   createComment,
   getComments,
+  deleteComment,
 };

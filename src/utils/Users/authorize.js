@@ -62,7 +62,7 @@ async function authorize(email, accessToken, refreshToken) {
         }
 
         const user = await jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_KEY);
-        const payload = { username: user.username, email: user.email };
+        const payload = { username: user.username, email: user.email, role: user.role };
         const accessToken = await jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_KEY, { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRED });
         return {
           status: true,

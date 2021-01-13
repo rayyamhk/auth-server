@@ -8,6 +8,7 @@ async function updateUser(req, res) {
       newEmail,
       newPassword,
       newUsername,
+      newRole,
     } = req.body;
 
     const updates = {};
@@ -19,6 +20,9 @@ async function updateUser(req, res) {
     }
     if (newUsername) {
       updates.username = newUsername;
+    }
+    if (newRole) {
+      updates.role = newRole;
     }
 
     const {

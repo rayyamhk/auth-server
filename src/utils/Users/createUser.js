@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt');
 const getCollection = require('../getCollection');
 
-async function createUser(username, email, password) {
+// role can be either 'user' or 'admin'
+async function createUser(username, email, password, role) {
   if (!username || !email || !password) {
     return {
       status: false,
@@ -30,6 +31,7 @@ async function createUser(username, email, password) {
       email,
       avatar: null,
       password: hash,
+      role: role || 'user',
       createdAt: now,
       updatedAt: now,
       lastLogin: null,

@@ -29,6 +29,7 @@ async function authenticate(req, res) {
       const payload = {
         username: user.username,
         email: user.email,
+        role: user.role,
       };
       const accessToken = await jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_KEY, { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRED });
       const refreshToken = await jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_KEY, { expiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRED });
