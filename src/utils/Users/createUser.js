@@ -28,12 +28,14 @@ async function createUser(username, email, password) {
     await Users.insertOne({
       username,
       email,
+      avatar: null,
       password: hash,
       createdAt: now,
       updatedAt: now,
       lastLogin: null,
       loginAttempts: 0,
       isBlocked: false,
+      isActivated: false,
       refreshToken: null,
     });
     return {

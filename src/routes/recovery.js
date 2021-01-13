@@ -1,101 +1,69 @@
 const {
-  genVerification,
   sendMail,
-  Cache,
   logger,
 } = require('../utils');
-const { updateUser } = require('../utils/Users');
-
-const codeCache = new Cache({
-  ttl: 3 * 60 * 1000, // 3m
-  period: 60 * 60 * 1000, // 1h
-});
-
-const allowedCache = new Cache({
-  ttl: 5 * 60 * 1000, // 5m
-  period: 60 * 60 * 1000, // 1h
-});
+const { updateUser, getUser } = require('../utils/Users');
+const jwt = require('jsonwebtoken');
 
 async function recovery(req, res) {
   const { task } = req.query;
 
-  if (task === 'verify') {
-    const { code, email } = req.body;
-    const item = codeCache.get(email);
-
-    // if submit nothing or the email hasn't been requested for recovery
-    if (!code || !item) {
-      return res.status(400).send('Bad request').end();
-    }
-
-    if (item !== code) {
-      return res.status(403).send('Verification code does not match').end();
-    }
-
-    codeCache.remove(email);
-
-    // user with same email and same ip is allowed to change his/her
-    // password within the next 5 minutes
-    const key = `${email}|${req.ip}`;
-    allowedCache.set(key, true);
-    return res.status(200).send('Verification successful').end();
-  }
-
   if (task === 'reset') {
-    const { email, password } = req.body;
-    // check if the client is allowed to change password or not
-    const key = `${email}|${req.ip}`;
-    const isAllowed = allowedCache.get(key);
-
-    if (!email || !password || !isAllowed) {
-      return res.status(400).send('Bad request').end();
-    }
-
-    // remove the permit immediately. 
-    allowedCache.remove(key);
+    const { token, password } = req.body;
 
     try {
-      const {
-        status,
-        statusCode,
-        message,
-      } = await updateUser(email, { password });
+      const { email, ip } = await jwt.verify(token, process.env.JWT_VERIFY_TOKEN_KEY);
+      if (ip !== req.ip) {
+        logger.error('Ip address does not match');
+        return res.status(403).send('Unauthorized').end();
+      }
 
+      const { status, statusCode, message } = await updateUser(email, { password });
       if (status) {
         logger.info(message);
         return res.status(statusCode).send('Your password has been changed successfully').end();
       }
-
       logger.warn(message);
-      return res.status(statusCode).send(message).end();
+      return res.status(400).send('Bad request').end();
 
+    } catch (err) {
+      if (err.name === 'TokenExpiredError') {
+        logger.error('Verify token expired');
+        return res.status(403).send('Unauthorized: Request expired');
+      }
+      if (err.name === 'JsonWebTokenError') {
+        logger.error('Incorrect verify token');
+        return res.status(403).send('Unauthorized').end();
+      }
+      logger.error(err);
+      return res.status(500).send('500 Internal Server Error').end();
+    }
+  } else {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).send('Bad request').end();
+    }
+    
+    try {
+      const { status, message } = await getUser(email);
+      if (status) {
+        const payload = { email, ip: req.ip };
+        const verifyToken = await jwt.sign(payload, process.env.JWT_VERIFY_TOKEN_KEY, { expiresIn: '5m' });
+        await sendMail({
+          to: `User <${email}>`,
+          subject: 'Reset your password',
+          text: `Please verify your password recovery request via this url: ${process.env.PRODUCT_URL}/recovery/reset?token=${verifyToken}`,
+        });
+        logger.info(`Email has been sent to ${email}`);
+        return res.status(200).send(`An email has been sent to your address, please verify it within 5 minutes.`).end();
+      }
+      logger.warn(message);
+      return res.status(400).send('Bad request').end();
     } catch (err) {
       logger.error(err);
       return res.status(500).send('500 Internal Server Error').end();
     }
-  }
-
-  // generate verification code
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).send('Bad request').end();
-  }
-
-  const verificationCode = genVerification();
-  codeCache.set(email, verificationCode);
-  
-  try {
-    await sendMail({
-      to: `User <${email}>`,
-      subject: 'Reset your password',
-      text: `Your verification code: ${verificationCode}`,
-    });
-    logger.info(`Email has been sent to ${email}`);
-    return res.status(200).send(`Verification code has been sent to your email address, please verify it within 3 minutes.`).end();
-  } catch (err) {
-    logger.error(err);
-    return res.status(500).send('500 Internal Server Error').end();
   }
 };
 

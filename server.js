@@ -12,6 +12,7 @@ const {
   authenticate,
   authorize,
   logout,
+  register,
   recovery,
   createComment,
   getComments,
@@ -34,6 +35,7 @@ app.put('/user', secureAccess, updateUser);
 app.post('/authenticate', authenticate);
 app.post('/authorize', authorize);
 app.post('/logout', logout);
+app.post('/register', register);
 app.post('/recovery', recovery);
 
 app.get('/comments', getComments);
