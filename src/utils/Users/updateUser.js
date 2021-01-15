@@ -40,12 +40,14 @@ async function genReplacement(fields) {
     for (const key in fields) {
       const value = fields[key];
 
-      if (key === 'password') {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(fields.password, salt);
-        options.password = hash;
-      } else {
-        options[key] = value;
+      if (value !== null && value !== undefined) {
+        if (key === 'password') {
+          const salt = await bcrypt.genSalt(10);
+          const hash = await bcrypt.hash(fields.password, salt);
+          options.password = hash;
+        } else {
+          options[key] = value;
+        }
       }
     }
 

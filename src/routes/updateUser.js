@@ -5,30 +5,37 @@ async function updateUser(req, res) {
   try {
     const {
       email,
-      newEmail,
-      newPassword,
-      newUsername,
-      newRole,
+      updates,
     } = req.body;
 
-    const updates = {};
-    if (newEmail) {
-      updates.email = newEmail;
-    }
-    if (newPassword) {
-      updates.password = newPassword;
-    }
-    if (newUsername) {
-      updates.username = newUsername;
-    }
-    if (newRole) {
-      updates.role = newRole;
-    }
+    const {
+      username,
+      password,
+      avatar,
+      age,
+      gender,
+      bio,
+      area,
+      district,
+      address,
+      role,
+    } = updates;
 
     const {
       statusCode,
       message,
-    } = await modifyUser(email, updates);
+    } = await modifyUser(email, {
+      username,
+      password,
+      avatar,
+      age,
+      gender,
+      bio,
+      area,
+      district,
+      address,
+      role,
+    });
 
     return res.status(statusCode).send(message).end();
   } catch (err) {
