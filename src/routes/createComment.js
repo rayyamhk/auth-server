@@ -5,14 +5,14 @@ async function createComment(req, res) {
   try {
     const {
       postId,
-      username,
-      comment,
+      user,
+      body,
     } = req.body;
 
     const {
       statusCode,
       message,
-    } = await addComment(postId, username, comment);
+    } = await addComment(postId, user, body);
     logger.info(message);
     return res.status(statusCode).send(message).end();
   } catch (err) {

@@ -15,8 +15,6 @@ async function updateUser(req, res) {
       age,
       gender,
       bio,
-      area,
-      district,
       address,
       role,
     } = updates;
@@ -31,8 +29,6 @@ async function updateUser(req, res) {
       age,
       gender,
       bio,
-      area,
-      district,
       address,
       role,
     });

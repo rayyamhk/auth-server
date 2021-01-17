@@ -57,7 +57,7 @@ async function recovery(req, res) {
           text: `Please verify your password recovery request via this url: ${process.env.PRODUCT_URL}/recovery/reset?token=${verifyToken}`,
         });
         logger.info(`Email has been sent to ${email}`);
-        logger.info(`Request ip address: ${ip}`);
+        logger.info(`Request ip address: ${req.requestIp}`);
         return res.status(200).send(`An email has been sent to your address, please verify it within 5 minutes.`).end();
       }
       logger.warn(message);

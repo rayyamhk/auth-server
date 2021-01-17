@@ -1,6 +1,9 @@
 const { authorize } = require('../utils/Users');
 
 async function secureAccess(req, res, next) {
+  if (process.env.SECURE_ACCESS === 'false') {
+    return next();
+  }
   let email;
   if (req.body.email) {
     email = req.body.email;

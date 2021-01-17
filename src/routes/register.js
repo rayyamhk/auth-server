@@ -15,14 +15,14 @@ async function register(req, res) {
   const { task } = req.query;
 
   if (task === 'verify') {
-    const { code, email } = req.body;
+    const { verificationCode, email } = req.body;
     const item = cache.get(email);
 
-    if (!code || !item) {
+    if (!verificationCode || !item) {
       return res.status(400).send('Bad request, you can try to resend the verification code').end();
     }
 
-    if (code !== item) {
+    if (verificationCode !== item) {
       return res.status(403).send('Verification code does not match').end();
     }
 

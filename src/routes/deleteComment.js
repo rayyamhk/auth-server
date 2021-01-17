@@ -3,12 +3,12 @@ const { deleteComment: removeComment } = require('../utils/Comments');
 
 async function deleteComment(req, res) {
   try {
-    const { commentId } = req.body;
+    const { id } = req.body;
 
     const {
       statusCode,
       message,
-    } = await removeComment(commentId);
+    } = await removeComment(id);
     logger.info(message);
     return res.status(statusCode).send(message).end();
   } catch (err) {

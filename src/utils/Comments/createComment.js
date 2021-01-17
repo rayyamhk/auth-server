@@ -1,7 +1,7 @@
 const getCollection = require('../getCollection');
 
-async function createComment(postId, username, comment) {
-  if (!postId || !username || !comment) {
+async function createComment(postId, user, body) {
+  if (!postId || !user || !body) {
     return {
       status: false,
       statusCode: 400,
@@ -14,8 +14,8 @@ async function createComment(postId, username, comment) {
     const now = new Date().toISOString();
     await Comments.insertOne({
       postId,
-      username,
-      comment,
+      user,
+      body,
       createdAt: now,
     });
     return {

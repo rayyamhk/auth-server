@@ -16,7 +16,7 @@ async function authenticate(req, res) {
 
     if (!status) {
       logger.warn(message);
-      return res.status(statusCode).send(message).end();
+      return res.status(statusCode).send('Incorrect email or password').end();
     }
 
     if (user.isBlocked) {

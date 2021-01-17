@@ -1,8 +1,8 @@
 const getCollection = require('../getCollection');
 const { ObjectID } = require('mongodb');
 
-async function deleteComment(commentId) {
-  if (!commentId) {
+async function deleteComment(id) {
+  if (!id) {
     return {
       status: false,
       statusCode: 400,
@@ -11,7 +11,7 @@ async function deleteComment(commentId) {
   }
   try {
     const Comments = await getCollection('Comments');
-    const result = await Comments.deleteOne({ _id: new ObjectID(commentId) });
+    const result = await Comments.deleteOne({ _id: new ObjectID(id) });
     if (result.deletedCount === 1) {
       return {
         status: true,
