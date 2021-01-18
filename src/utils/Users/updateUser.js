@@ -12,6 +12,18 @@ async function updateUser(email, updates = {}) {
 
   try {
     const Users = await getCollection('Users');
+
+    if (updates.username) {
+      const isExisted = await Users.findOne({ username: updates.username });
+      if (isExisted) {
+        return {
+          status: false,
+          statusCode: 400,
+          message: 'Username already exists',
+        };
+      }
+    }
+
     const replacements = await genReplacement(updates);
     const result = await Users.updateOne({ email }, replacements, { upsert: false });
 

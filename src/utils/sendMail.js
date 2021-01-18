@@ -6,9 +6,9 @@ let transporter;
 // all email will be catched by ethereal.email
 const HOST = 'smtp.ethereal.email',
       PORT = 587,
-      USER = 'zula32@ethereal.email',
-      PASSWORD = 'kA9EjcmjJQuGakv8GY',
-      SENDER_NAME = 'Zula Becker';
+      USER = 'briana.mertz60@ethereal.email',
+      PASSWORD = '	uAz2gqG3xXebHPaEjP',
+      SENDER_NAME = 'Briana Mertz';
 
 function init() {
   transporter = nodemailer.createTransport({

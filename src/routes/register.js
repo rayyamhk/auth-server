@@ -91,6 +91,7 @@ async function register(req, res) {
     logger.error(message);
     return res.status(statusCode).send(message).end();
   } catch (err) {
+    logger.error(err);
     return res.status(500).send('500 Internal Server Error').end();
   }
 };

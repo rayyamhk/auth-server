@@ -12,15 +12,16 @@ async function authorize(email, accessToken, refreshToken) {
       };
     }
 
-    const user = await jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_KEY);
+    await jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_KEY);
 
-    const { status, statusCode, message, payload: result } = await getUser(email);
+    // access token good
+    const { status, payload: result } = await getUser(email);
 
     if (!status) {
       return {
-        status,
-        statusCode,
-        message,
+        status: false,
+        statusCode: 400,
+        message: 'Bad request',
       };
     }
 
@@ -36,7 +37,14 @@ async function authorize(email, accessToken, refreshToken) {
       status: true,
       statusCode: 200,
       message: 'Authorized: Correct access token',
-      payload: { user },
+      payload: {
+        user: {
+          username: result.username,
+          email: result.email,
+          avatar: result.avatar,
+          role: result.role,
+        },
+      },
     };
 
   } catch (err) {
@@ -61,14 +69,21 @@ async function authorize(email, accessToken, refreshToken) {
           };
         }
 
-        const user = await jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_KEY);
-        const payload = { username: user.username, email: user.email, role: user.role };
+        await jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_KEY);
+
+        // refresh token good
+        const payload = {
+          username: result.username,
+          email: result.email,
+          avatar: result.avatar,
+          role: result.role,
+        };
         const accessToken = await jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_KEY, { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRED });
         return {
           status: true,
           statusCode: 200,
           message: 'Authorized: Access token refreshed',
-          payload: { user, accessToken },
+          payload: { user: payload, accessToken },
         };
       } catch (err) {
         await updateUser(email, { refreshToken: null }); // log out

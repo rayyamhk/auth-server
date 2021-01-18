@@ -3,6 +3,7 @@ const getUser = require('./getUser');
 const deleteUser = require('./deleteUser');
 const createUser = require('./createUser');
 const updateUser = require('./updateUser');
+const validatePassword = require('./validatePassword');
 const authenticate = require('./authenticate');
 const authorize = require('./authorize');
 const logout = require('./logout');
@@ -18,6 +19,7 @@ module.exports = {
   deleteUser,
   createUser,
   updateUser,
+  validatePassword,
   authenticate,
   authorize,
   logout,

@@ -14,12 +14,17 @@ async function createUser(username, email, password, role) {
   try {
     const Users = await getCollection('Users');
 
-    const isExisted = await Users.findOne({ email });
+    const isExisted = await Users.findOne({
+      $or: [
+        { email },
+        { username },
+      ],
+    });
     if (isExisted) {
       return {
         status: false,
         statusCode: 400,
-        message: 'The email already exists',
+        message: 'Email or username already exist',
       };
     }
 

@@ -9,6 +9,7 @@ const {
   createUser,
   deleteUser,
   updateUser,
+  validatePassword,
   authenticate,
   authorize,
   logout,
@@ -28,11 +29,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(ipService());
 
+// TODO:
+// 1. refactor the routes, add url params
+// 2. use username instead of email
+
 app.get('/users', secureAccess, getUsers);
 app.get('/user', secureAccess, getUser);
-app.post('/user', createUser);
+app.post('/user', secureAccess, createUser);
 app.delete('/user', secureAccess, deleteUser);
 app.put('/user', secureAccess, updateUser);
+app.post('/user/validate/:email', secureAccess, validatePassword);
 app.post('/authenticate', authenticate);
 app.post('/authorize', authorize);
 app.post('/logout', logout);
